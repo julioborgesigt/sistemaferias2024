@@ -1,0 +1,17 @@
+{
+  "name": "sistemaferias2024",
+  "version": "1.0.0",
+  "description": "��#\u0000 \u0000s\u0000i\u0000s\u0000t\u0000e\u0000m\u0000a\u0000-\u0000f\u0000e\u0000r\u0000i\u0000a\u0000s\u0000-\u0000p\u0000c\u0000c\u0000e\u0000\r\u0000 \u0000#\u0000 \u0000s\u0000i\u0000s\u0000t\u0000e\u0000m\u0000a\u0000-\u0000f\u0000e\u0000r\u0000i\u0000a\u0000s\u0000-\u0000p\u0000c\u0000c\u0000e\u0000\r\u0000 \u0000#\u0000 \u0000s\u0000i\u0000s\u0000t\u0000e\u0000m\u0000a\u0000-\u0000f\u0000e\u0000r\u0000i\u0000a\u0000s\u0000-\u0000p\u0000c\u0000c\u0000e\u0000\r\u0000 \u0000#\u0000 \u0000s\u0000i\u0000s\u0000t\u0000e\u0000m\u0000a\u0000d\u0000e\u0000f\u0000e\u0000r\u0000i\u0000a\u0000s\u0000p\u0000c\u0000c\u0000e\u0000\r\u0000 \u0000",
+  "main": "backup22de09de24.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "json-server": "^1.0.0-beta.3",
+    "nodemon": "^3.1.7"
+  }
+}
