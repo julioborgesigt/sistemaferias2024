@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendário de férias</title>
+    <link rel="stylesheet" href="calendario.css">   
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    
+    
+</head>
+<body>
+    <div class="container">
+        
+       
+        <div style="text-align: center; margin-top: -10px;">
+            <button id="toggle-dark-mode"><i class="fas fa-moon"></i></button>
+        </div>
+        
+        <h2 id="tituloCalendario">Calendário de Férias - Ano Corrente - IPC</h2>
+        <div id="info">
+            <!-- As informações do cadastro serão exibidas aqui -->
+        </div>
+        
+        <div>
+            <button id="anoCorrenteIPCBtn">Ano Corrente - IPC</button>
+            <button id="proximoAnoIPCBtn">2025 - IPC</button>
+            <button id="2026IPCBtn">2026 - IPC</button>
+            <button id="anoCorrenteEPCBtn">Ano Corrente - EPC</button>
+            <button id="proximoAnoEPCBtn">2025 - EPC</button>
+            <button id="2026EPCBtn">2026 - EPC</button>
+            <button onclick="window.print()">Imprimir</button>
+            
+        </div>
+        <div id="calendarioCorrente" class="calendario-ano"></div>
+        <div id="calendarioProximo" class="calendario-ano" style="display:none;"></div>
+    </div>
+
+    <script src="calendario.js"></script>
+</body>
+</html>

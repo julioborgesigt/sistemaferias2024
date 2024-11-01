@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conclusão do Cadastro</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+
+        
+
+        <h1>Suas informações sobre critérios de preferência</h1>
+        <div id="info">
+            <!-- As informações do cadastro serão exibidas aqui -->
+        </div>
+        <button onclick="window.print()">Imprimir</button>
+        
+    </div>
+
+    <script>
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const matricula = urlParams.get('matricula');
+
+            if (!matricula) {
+                document.getElementById('info').innerHTML = "<p>Erro: matrícula não fornecida.</p>";
+                return;
+            }
+
+            fetch('banco_dados.json')
+                .then(response => response.json())
+                .then(database => {
+                    const dadosUsuario = database[matricula];
+
+                    if (dadosUsuario) {
+                        const infoDiv = document.getElementById('info');
+                        infoDiv.innerHTML = `
+                            <p>CRITÉRIOS PARA FÉRIAS ESCOLAR</p>
+                            <hr></hr>
+                            <p>Quantidade de Filhos Menores: ${dadosUsuario.qtdfilhosmenores}</p>
+                            <p>Casado com professor?: ${dadosUsuario.ecasadoComPofessor}</p>
+                            <p>Estudante ou aluno de acadepol?: ${dadosUsuario.estudanteOUaluno}</p>
+                            <hr></hr>
+                            <p>CRITÉRIOS PARA FÉRIAS NÃO ESCOLAR</p>
+                            <hr></hr>
+                            <p>Gestante?: ${dadosUsuario.gestante}</p>
+                            <p>Quantidade de Filhos Menores: ${dadosUsuario.qtdfilhosmenores}</p>
+                            <p>Doi vínculos com mesmo período de férias?: ${dadosUsuario.estudante}</p>
+                            <p>Doi vínculos com mesmo período de férias?: ${dadosUsuario.DoisEmpregos}</p>
+                            <p>Antiguidade ${dadosUsuario.antiguidade}</p>
+                            <p>Conjuge servidor com o mesmo periodo?: ${dadosUsuario.ConjugeMesmoPeriodo}</p>
+                            <p>Idade: ${dadosUsuario.idade}</p>
+                            
+                            
+                        `;
+                    } else {
+                        document.getElementById('info').innerHTML = "<p>Erro: usuário não encontrado.</p>";
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao carregar o banco de dados:', error);
+                    document.getElementById('info').innerHTML = "<p>Erro ao carregar o banco de dados.</p>";
+                });
+        });
+    </script>
+</body>
+</html>

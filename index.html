@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login e Cadastro</title>
+    <link rel="stylesheet" href="index.css">
+    <script>
+        let database = {};
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            carregarBancoDados();
+            document.getElementById('loginBtn').addEventListener('click', () => {
+                document.getElementById('loginForm').style.display = 'block';
+                document.getElementById('cadastroForm').style.display = 'none';
+                document.getElementById('loginBtn').classList.add('active');
+                document.getElementById('cadastroBtn').classList.remove('active');
+            });
+
+            document.getElementById('cadastroBtn').addEventListener('click', () => {
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('cadastroForm').style.display = 'block';
+                document.getElementById('loginBtn').classList.remove('active');
+                document.getElementById('cadastroBtn').classList.add('active');
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            carregarBancoDados();
+        });
+
+        // Verifica se a página foi carregada a partir do cache do navegador
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                window.location.href = 'index.html';
+            }
+        });
+
+        function carregarBancoDados() {
+            const url = 'banco_dados.json';
+
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Erro ao carregar o arquivo.');
+                    }
+                    return response.text();
+                })
+                .then(jsonData => {
+                    database = JSON.parse(jsonData);
+                    console.log("Banco de dados carregado:", database);
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                });
+        }
+
+
+        function salvarBancoDados() {
+            const url = 'banco_dados.json';
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(database),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro ao salvar os dados.');
+                }
+                alert("Dados salvos com sucesso!");
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+            });
+        }
+
+        function generateToken() {
+            return Math.random().toString(36).substr(2);
+        }
+
+        function validarMatricula(input) {
+            const anoCorrente = new Date().getFullYear();
+            const matricula = input.value.trim();
+
+            // Verifica se a matrícula já contém um ponto seguido de quatro dígitos no final
+            if (!matricula.match(/\.\d{4}$/)) {
+                input.value = `${matricula}.${anoCorrente}`;
+            }
+        }
+        let feriasescolarounao = 3 ;
+        function login() {
+            const matricula = document.getElementById('loginMatricula').value;
+            const senha = document.getElementById('loginSenha').value;
+            const isAdmin = document.getElementById('adminCheckbox').checked;
+
+            console.log("Tentando login:", { matricula, senha, isAdmin });
+
+            if (database[matricula] && database[matricula].senha === senha) {
+                console.log("Credenciais verificadas no banco de dados.");
+                
+                const token = generateToken();
+                const expirationTime = new Date().getTime() + 10 * 60 * 1000; // 10 minutos em milissegundos
+                const loginData = { token, expirationTime };
+
+                localStorage.setItem('loginToken', JSON.stringify(loginData));
+
+                if (isAdmin) {
+                    if (senha === '25081990') {
+                        alert("Bem-vindo, Administrador!");
+                        window.location.href = 'adm.html';
+                    } else {
+                        alert("Você não é um administrador.");
+                    }
+                } else {
+                    alert("Login bem-sucedido!");
+                    window.location.href = `cadastro.html?matricula=${matricula}`; 
+                }
+            } else {
+                alert("Matrícula ou senha incorreta.");
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkboxes = document.querySelectorAll('.cargo-checkbox');
+
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        checkboxes.forEach(box => {
+                            if (box !== this) {
+                                box.checked = false;
+                            }
+                        });
+                    }
+                });
+            });
+        });
+
+        function cadastrar() {
+            const matricula = document.getElementById('cadastroMatricula').value;
+            const senha = document.getElementById('cadastroSenha').value;
+            const confirmacaoSenha = document.getElementById('cadastroConfirmacaoSenha').value;
+
+            if (senha.length < 8 || senha.length > 8 || matricula.length < 13 || matricula.length > 13) {
+                alert("Confira a Matrícula ou verifique se a senha tem exatamente 8 caracteres.");
+                return;
+            }
+
+            if (senha !== confirmacaoSenha) {
+                alert("As senhas não coincidem.");
+                return;
+            }
+
+            if (database[matricula] && database[matricula].senha.length === 8) {
+                alert("Matrícula já cadastrada com uma senha.");
+                return;
+            }
+            
+            if (database[matricula]) {
+                // Se a matrícula já existir, adicione os dados aos existentes
+                Object.assign(database[matricula], {
+                    senha: senha,
+                    feriasescolarounao: feriasescolarounao
+                    
+                });
+                console.log('pre cad');
+            } else {
+                // Se a matrícula não existir, crie um novo registro
+                database[matricula] = {
+                    senha,
+                    matricula,
+                    feriasescolarounao: feriasescolarounao
+                };
+                console.log('novo cad');
+            }
+            console.log('novo cad veja');
+            console.log(database[matricula]);
+            console.log(matricula);
+
+            salvarBancoDados();
+        }
+    </script>
+</head>
+<body>
+    <div class="login-background"></div>
+    <div class="login-container">
+        <div class="toggle-buttons">
+            <button id="loginBtn" class="active">Entrar</button>
+            <button id="cadastroBtn">Cadastrar</button>
+        </div>
+        
+        
+        <div id="loginForm">
+           
+            <label for="loginMatricula">Matrícula:</label>
+            <input type="text" id="loginMatricula" name="loginMatricula" required onblur="validarMatricula(this)">
+            <label for="loginSenha">Senha:</label>
+            <input type="password" id="loginSenha" name="loginSenha" required>
+            <label for="adminCheckbox">
+                <input type="checkbox" id="adminCheckbox" name="admin">
+                Sou Administrador
+            </label>
+            <button onclick="login()">Entrar</button>
+        </div>
+
+        <div id="cadastroForm" style="display: none;">
+            
+            <label for="cadastroMatricula">Matrícula:</label>
+            <input type="text" id="cadastroMatricula" name="cadastroMatricula" required onblur="validarMatricula(this)">
+            <label for="cadastroSenha">Senha:</label>
+            <input type="password" id="cadastroSenha" name="cadastroSenha" required>
+            <label for="cadastroConfirmacaoSenha">Confirme a Senha:</label>
+            <input type="password" id="cadastroConfirmacaoSenha" name="cadastroConfirmacaoSenha" required>
+            <button onclick="cadastrar()">Cadastrar</button>
+        </div>
+    </div>
+</body>
+</html>
